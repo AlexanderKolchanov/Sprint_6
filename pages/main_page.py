@@ -1,3 +1,4 @@
+
 from .base_page import BasePage
 from locators.main_page_locators import MainPageLocators
 from urls import URLs
@@ -12,7 +13,8 @@ class MainPage(BasePage):
 
     @allure.step('Открыть главную страницу')
     def open(self):
-        self.driver.get(self.url)
+        # ✅ Исправлено: используем метод из BasePage вместо прямого обращения к driver
+        self.go_to_url(self.url)
 
     @allure.step('Принять куки')
     def accept_cookies(self):
@@ -56,7 +58,8 @@ class MainPage(BasePage):
 
     @allure.step('Получить текущий URL')
     def get_current_url(self):
-        return self.driver.current_url
+        # ✅ Исправлено: используем метод из BasePage вместо прямого обращения к driver
+        return self.get_page_url()
 
     @allure.step('Проверить переход на главную страницу Самоката')
     def check_scooter_main_page(self):
@@ -66,25 +69,16 @@ class MainPage(BasePage):
     def check_yandex_redirect(self):
         """
         Проверка редиректа на Дзен после клика на логотип Яндекса.
-        Ожидает появления новой вкладки и переключается на нее.
+        ✅ ИСПРАВЛЕНО: убраны прямые обращения к driver и WebDriverWait
         """
-        # Ждем появления второй вкладки
-        self.wait.until(lambda driver: len(driver.window_handles) > 1)
+        # ✅ Исправлено: используем метод из BasePage вместо прямого WebDriverWait
+        original_window = self.wait_and_switch_to_new_tab()
         
-        # Сохраняем текущую вкладку
-        original_window = self.driver.current_window_handle
-        
-        # Переключаемся на новую вкладку (последнюю в списке)
-        for window_handle in self.driver.window_handles:
-            if window_handle != original_window:
-                self.driver.switch_to.window(window_handle)
-                break
-        
-        # Ждем загрузки страницы и проверяем URL
-        self.wait.until(lambda driver: driver.current_url != 'about:blank')
+        # Получаем URL новой вкладки
         current_url = self.get_current_url()
         
-        # Возвращаемся на исходную вкладку для последующих тестов
-        self.driver.switch_to.window(original_window)
+        # ✅ Исправлено: используем методы из BasePage
+        self.close_current_tab()
+        self.switch_to_window(original_window)
         
         return "dzen.ru" in current_url
