@@ -15,8 +15,8 @@ venv/
 Thumbs.db
 
 # Allure
-allure-report/
-allure-results/
+#allure-report/
+#allure-results/
 
 # Browser drivers
 geckodriver*
