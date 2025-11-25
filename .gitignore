@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.pyc
+.env
+.venv/
+venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Allure
+#allure-report/
+#allure-results/
+
+# Browser drivers
+geckodriver*
+chromedriver*
